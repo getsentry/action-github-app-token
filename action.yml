@@ -2,7 +2,11 @@ name: 'action-github-app-token'
 description: 'Gets a GitHub auth token for a GitHub App installation'
 author: 'sentry.io'
 inputs:
+  app_id:
+    required: true
+    description: 'GitHub App ID'
   private_key:
+    required: true
     description: 'Private key for the GitHub App'
 outputs:
   token:
