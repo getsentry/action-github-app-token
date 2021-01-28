@@ -2,10 +2,10 @@
   "name": "github-app-token",
   "version": "1.0.0",
   "description": "Gets a GitHub auth token for a GitHub App installation",
-  "main": "lib/getInstallToken.js",
+  "main": "lib/index.js",
   "scripts": {
     "prepare": "yarn build",
-    "build": "yarn tsc",
+    "build": "yarn tsc -d",
     "format": "yarn prettier --write **/*.ts",
     "format-check": "yarn prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
@@ -13,6 +13,10 @@
     "test": "yarn jest",
     "all": "yarn build && yarn format && yarn lint && yarn test && yarn dist"
   },
+  "files": [
+    "lib",
+    "src"
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:getsentry/action-github-app-token.git"

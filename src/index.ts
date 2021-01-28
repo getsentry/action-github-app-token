@@ -1,7 +1,7 @@
 import { createAppAuth } from "@octokit/auth-app";
 import { Octokit } from "@octokit/rest";
 
-export default async function getInstallToken(
+export default async function getToken(
   privateKey: string,
   appId: string
 ): Promise<string> {

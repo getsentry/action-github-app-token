@@ -15484,7 +15484,7 @@ module.exports = /******/ (() => {
       /***/
     },
 
-    /***/ 1352: /***/ function (
+    /***/ 6144: /***/ function (
       __unused_webpack_module,
       exports,
       __nccwpck_require__
@@ -15529,7 +15529,7 @@ module.exports = /******/ (() => {
       Object.defineProperty(exports, "__esModule", { value: true });
       const auth_app_1 = __nccwpck_require__(7541);
       const rest_1 = __nccwpck_require__(5375);
-      function getInstallToken(privateKey, appId) {
+      function getToken(privateKey, appId) {
         return __awaiter(this, void 0, void 0, function* () {
           const appOctokit = new rest_1.Octokit({
             authStrategy: auth_app_1.createAppAuth,
@@ -15548,7 +15548,7 @@ module.exports = /******/ (() => {
           return resp.token;
         });
       }
-      exports.default = getInstallToken;
+      exports.default = getToken;
 
       /***/
     },
@@ -15645,7 +15645,7 @@ module.exports = /******/ (() => {
         };
       Object.defineProperty(exports, "__esModule", { value: true });
       const core = __importStar(__nccwpck_require__(2186));
-      const getInstallToken_1 = __importDefault(__nccwpck_require__(1352));
+      const index_1 = __importDefault(__nccwpck_require__(6144));
       /**
        * This is only used for GitHub Actions, we also publish `getInstallToken.ts` to npm
        */
@@ -15654,7 +15654,7 @@ module.exports = /******/ (() => {
           try {
             const privateKey = core.getInput("private_key");
             const id = core.getInput("app_id");
-            const token = getInstallToken_1.default(id, privateKey);
+            const token = index_1.default(id, privateKey);
             core.setOutput("token", token);
           } catch (error) {
             core.setFailed(error.message);
