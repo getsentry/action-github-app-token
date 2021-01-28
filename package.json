@@ -1,14 +1,15 @@
 {
-  "name": "action-github-app-token",
+  "name": "github-app-token",
   "version": "1.0.0",
   "description": "Gets a GitHub auth token for a GitHub App installation",
-  "main": "lib/main.js",
+  "main": "lib/getInstallToken.js",
   "scripts": {
+    "prepare": "yarn build",
     "build": "yarn tsc",
     "format": "yarn prettier --write **/*.ts",
     "format-check": "yarn prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
-    "dist": "yarn build && yarn ncc build",
+    "dist": "yarn build && yarn ncc build src/main.ts",
     "test": "yarn jest",
     "all": "yarn build && yarn format && yarn lint && yarn test && yarn dist"
   },
@@ -42,16 +43,17 @@
   },
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "@octokit/auth-app": "^2.4.14",
-    "@octokit/rest": "^18.0.3"
+    "@octokit/auth-app": "^2.10.6",
+    "@octokit/rest": "^18.0.15"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
     "@types/node": "^12.7.12",
+    "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.0",
     "@vercel/ncc": "^0.27.0",
     "eslint": "^7.18.0",
-    "eslint-plugin-github": "^4.1.1",
+    "eslint-config-sentry": "^1.50.0",
     "eslint-plugin-jest": "^24.1.3",
     "eslint-plugin-prettier": "^3.3.1",
     "husky": "^4.3.8",
