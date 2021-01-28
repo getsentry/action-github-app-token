@@ -15529,7 +15529,7 @@ module.exports = /******/ (() => {
       Object.defineProperty(exports, "__esModule", { value: true });
       const auth_app_1 = __nccwpck_require__(7541);
       const rest_1 = __nccwpck_require__(5375);
-      function getToken(privateKey, appId) {
+      function getToken(appId, privateKey) {
         return __awaiter(this, void 0, void 0, function* () {
           const appOctokit = new rest_1.Octokit({
             authStrategy: auth_app_1.createAppAuth,

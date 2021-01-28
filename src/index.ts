@@ -2,8 +2,8 @@ import { createAppAuth } from "@octokit/auth-app";
 import { Octokit } from "@octokit/rest";
 
 export default async function getToken(
-  privateKey: string,
-  appId: string
+  appId: string,
+  privateKey: string
 ): Promise<string> {
   const appOctokit = new Octokit({
     authStrategy: createAppAuth,
