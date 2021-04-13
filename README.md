@@ -22,7 +22,7 @@ You will need to provide the GitHub App ID and private key. The action will then
 ```
   - name: my-app-install token
     id: my-app
-    uses: getsentry/action-github-app-token@1
+    uses: getsentry/action-github-app-token@v1
     with:
       app_id: ${{ secrets.APP_ID }}
       private_key: ${{ secrets.APP_PRIVATE_KEY }}
