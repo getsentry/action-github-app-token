@@ -12,6 +12,7 @@ async function run(): Promise<void> {
         id,
         privateKey,
       },
+      baseUrl: process.env['GITHUB_API_URL'] || 'https://api.github.com',
     });
 
     const {data} = await appOctokit.apps.listInstallations();
