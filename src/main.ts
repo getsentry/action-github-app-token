@@ -21,6 +21,7 @@ async function run(): Promise<void> {
       type: 'installation',
       installationId: data[0].id,
     });
+    core.setSecret(resp.token);
     // @ts-ignore
     core.setOutput('token', resp.token);
   } catch (error) {
