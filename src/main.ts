@@ -3,6 +3,8 @@ import { Octokit } from "@octokit/rest";
 import { Endpoints } from "@octokit/types";
 import * as core from "@actions/core";
 
+type listInstallationsResponse = Endpoints["GET /app/installations"]["response"];
+
 async function run(): Promise<void> {
   try {
     const privateKey: string = core.getInput("private_key");
@@ -16,8 +18,6 @@ async function run(): Promise<void> {
       },
       baseUrl: process.env.GITHUB_API_URL || "https://api.github.com",
     });
-
-    type listInstallationsResponse = Endpoints["GET /app/installations"]["response"];
 
     const installations: listInstallationsResponse = await appOctokit.apps.listInstallations();
     let installationId = installations.data[0].id;
