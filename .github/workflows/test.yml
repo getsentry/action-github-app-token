@@ -1,0 +1,21 @@
+name: "test"
+
+on: pull_request
+
+jobs:
+  build: # make sure build/ci work properly
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        cache: yarn
+
+    - name: lint
+      run: |
+        yarn lint
+        yarn format-check
+
+    - name: build
+      run: yarn build
+
