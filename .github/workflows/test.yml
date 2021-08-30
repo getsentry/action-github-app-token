@@ -32,6 +32,5 @@ jobs:
     - name: Integration test - checkout private repo
       uses: actions/checkout@v2
       with:
-        ref: main
         repository: getsentry/action-github-app-token-test
         token: ${{ steps.my-app.outputs.token }}
