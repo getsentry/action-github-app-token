@@ -45,9 +45,9 @@
     "node-fetch": "^2.6.1"
   },
   "dependencies": {
-    "@actions/core": "^1.2.6",
-    "@octokit/auth-app": "^2.4.14",
-    "@octokit/rest": "^18.0.3"
+    "@actions/core": "^1.5.0",
+    "@octokit/auth-app": "^3.6.0",
+    "@octokit/rest": "^18.9.1"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
