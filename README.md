@@ -12,7 +12,7 @@ $ yarn
 
 Build the typescript and package it for distribution
 ```bash
-$ yarn build
+$ yarn dist
 ```
 
 ## Usage
