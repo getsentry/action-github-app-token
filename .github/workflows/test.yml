@@ -22,3 +22,15 @@ jobs:
     - name: build
       run: yarn build
 
+    - name: Integration test - get token
+      id: my-app
+      uses: ./
+      with:
+        app_id: ${{ secrets.INTEGRATION_TEST_APP_ID }}
+        private_key: ${{ secrets.INTEGRATION_TEST_APP_PRIVATE_KEY }}
+
+    - name: Integration test - checkout private repo
+      uses: actions/checkout@v2
+      with:
+        repository: getsentry/action-github-app-token-testing
+        token: ${{ steps.my-app.outputs.token }}
