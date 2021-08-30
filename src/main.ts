@@ -8,12 +8,12 @@ type listInstallationsResponse = Endpoints['GET /app/installations']['response']
 async function run(): Promise<void> {
   try {
     const privateKey: string = core.getInput('private_key');
-    const appId: string = core.getInput('app_id');
+    const id: string = core.getInput('app_id');
     const scope: string = core.getInput('scope');
     const appOctokit = new Octokit({
       authStrategy: createAppAuth,
       auth: {
-        appId,
+        id,
         privateKey,
       },
       baseUrl: process.env.GITHUB_API_URL || 'https://api.github.com',

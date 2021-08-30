@@ -91,12 +91,12 @@ module.exports = /******/ (() => {
         return __awaiter(this, void 0, void 0, function* () {
           try {
             const privateKey = core.getInput('private_key');
-            const appId = core.getInput('app_id');
+            const id = core.getInput('app_id');
             const scope = core.getInput('scope');
             const appOctokit = new rest_1.Octokit({
               authStrategy: auth_app_1.createAppAuth,
               auth: {
-                appId,
+                id,
                 privateKey,
               },
               baseUrl: process.env.GITHUB_API_URL || 'https://api.github.com',
