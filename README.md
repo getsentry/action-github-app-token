@@ -26,6 +26,7 @@ You will need to provide the GitHub App ID and private key. The action will then
     with:
       app_id: ${{ secrets.APP_ID }}
       private_key: ${{ secrets.APP_PRIVATE_KEY }}
+      scope: "octocat"  # Optional, you can set "org" or "org/repo"
 
   - name: Checkout private repo
     uses: actions/checkout@v2

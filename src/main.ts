@@ -5,6 +5,8 @@ import * as core from '@actions/core';
 
 type listInstallationsResponse =
   Endpoints['GET /app/installations']['response'];
+type listRepositoriesResponse =
+  Endpoints['GET /installation/repositories']['response'];
 
 async function run(): Promise<void> {
   try {
@@ -24,8 +26,9 @@ async function run(): Promise<void> {
       await appOctokit.apps.listInstallations();
     let installationId = installations.data[0].id;
     if (scope !== '') {
+      const loginName: string = scope.split('/')[0]; // if scope set repository, loginName is username
       const scopedData = installations.data.find(
-        (item) => item.account?.login === scope
+        (item) => item.account?.login === loginName
       );
       if (scopedData === undefined) {
         throw new Error(`set scope is ${scope}, but installation is not found`);
@@ -43,16 +46,48 @@ async function run(): Promise<void> {
     if (!resp) {
       throw new Error('Unable to authenticate');
     }
+    // @ts-expect-error
+    const installationToken = resp.token;
 
-    // @ts-expect-error
-    core.setSecret(resp.token);
-    // @ts-expect-error
-    core.setOutput('token', resp.token);
+    // Need to check accessibility if scope set repository
+    if (scope !== '' && scope.split('/').length === 2) {
+      const error = await isExistRepositoryInGitHubApps(
+        installationToken,
+        scope
+      );
+      if (error.error !== '') {
+        throw new Error(error.error);
+      }
+    }
+
+    core.setSecret(installationToken);
+    core.setOutput('token', installationToken);
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message);
     }
   }
+}
+
+async function isExistRepositoryInGitHubApps(
+  installationToken: string,
+  repository: string
+): Promise<{error: string}> {
+  const installationOctokit = new Octokit({
+    auth: installationToken,
+    baseUrl: process.env.GITHUB_API_URL || 'https://api.github.com',
+  });
+  const accessibleRepositories: listRepositoriesResponse =
+    await installationOctokit.apps.listReposAccessibleToInstallation();
+
+  const repo = accessibleRepositories.data.repositories.find(
+    (item) => item.full_name === repository
+  );
+  if (repo === undefined) {
+    return {error: `GitHub Apps can't accessible repository (${repository})`};
+  }
+
+  return {error: ''};
 }
 
 run();

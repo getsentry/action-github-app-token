@@ -104,12 +104,13 @@
             const installations = yield appOctokit.apps.listInstallations();
             let installationId = installations.data[0].id;
             if (scope !== '') {
+              const loginName = scope.split('/')[0]; // if scope set repository, loginName is username
               const scopedData = installations.data.find((item) => {
                 var _a;
                 return (
                   ((_a = item.account) === null || _a === void 0
                     ? void 0
-                    : _a.login) === scope
+                    : _a.login) === loginName
                 );
               });
               if (scopedData === undefined) {
@@ -129,14 +130,43 @@
               throw new Error('Unable to authenticate');
             }
             // @ts-expect-error
-            core.setSecret(resp.token);
-            // @ts-expect-error
-            core.setOutput('token', resp.token);
+            const installationToken = resp.token;
+            // Need to check accessibility if scope set repository
+            if (scope !== '' && scope.split('/').length === 2) {
+              const error = yield isExistRepositoryInGitHubApps(
+                installationToken,
+                scope
+              );
+              if (error.error !== '') {
+                throw new Error(error.error);
+              }
+            }
+            core.setSecret(installationToken);
+            core.setOutput('token', installationToken);
           } catch (error) {
             if (error instanceof Error) {
               core.setFailed(error.message);
             }
           }
+        });
+      }
+      function isExistRepositoryInGitHubApps(installationToken, repository) {
+        return __awaiter(this, void 0, void 0, function* () {
+          const installationOctokit = new rest_1.Octokit({
+            auth: installationToken,
+            baseUrl: process.env.GITHUB_API_URL || 'https://api.github.com',
+          });
+          const accessibleRepositories =
+            yield installationOctokit.apps.listReposAccessibleToInstallation();
+          const repo = accessibleRepositories.data.repositories.find(
+            (item) => item.full_name === repository
+          );
+          if (repo === undefined) {
+            return {
+              error: `GitHub Apps can't accessible repository (${repository})`,
+            };
+          }
+          return {error: ''};
         });
       }
       run();
