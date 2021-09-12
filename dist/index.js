@@ -133,13 +133,7 @@
             const installationToken = resp.token;
             // Need to check accessibility if scope set repository
             if (scope !== '' && scope.split('/').length === 2) {
-              const error = yield isExistRepositoryInGitHubApps(
-                installationToken,
-                scope
-              );
-              if (error.error !== '') {
-                throw new Error(error.error);
-              }
+              yield isExistRepositoryInGitHubApps(installationToken, scope);
             }
             core.setSecret(installationToken);
             core.setOutput('token', installationToken);
@@ -162,11 +156,10 @@
             (item) => item.full_name === repository
           );
           if (repo === undefined) {
-            return {
-              error: `GitHub Apps can't accessible repository (${repository})`,
-            };
+            throw new Error(
+              `GitHub Apps can't accessible repository (${repository})`
+            );
           }
-          return {error: ''};
         });
       }
       run();

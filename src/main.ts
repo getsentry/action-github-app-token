@@ -51,13 +51,7 @@ async function run(): Promise<void> {
 
     // Need to check accessibility if scope set repository
     if (scope !== '' && scope.split('/').length === 2) {
-      const error = await isExistRepositoryInGitHubApps(
-        installationToken,
-        scope
-      );
-      if (error.error !== '') {
-        throw new Error(error.error);
-      }
+      await isExistRepositoryInGitHubApps(installationToken, scope);
     }
 
     core.setSecret(installationToken);
@@ -72,7 +66,7 @@ async function run(): Promise<void> {
 async function isExistRepositoryInGitHubApps(
   installationToken: string,
   repository: string
-): Promise<{error: string}> {
+): Promise<void> {
   const installationOctokit = new Octokit({
     auth: installationToken,
     baseUrl: process.env.GITHUB_API_URL || 'https://api.github.com',
@@ -84,10 +78,8 @@ async function isExistRepositoryInGitHubApps(
     (item) => item.full_name === repository
   );
   if (repo === undefined) {
-    return {error: `GitHub Apps can't accessible repository (${repository})`};
+    throw new Error(`GitHub Apps can't accessible repository (${repository})`);
   }
-
-  return {error: ''};
 }
 
 run();
