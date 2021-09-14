@@ -1,7 +1,7 @@
 {
-  "name": "action-github-app-token",
+  "name": "action-github-app-jwt-installation-token",
   "version": "1.0.0",
-  "description": "Gets a GitHub auth token for a GitHub App installation",
+  "description": "Gets a GitHub App JWT and Installation access token",
   "main": "lib/main.js",
   "scripts": {
     "build": "yarn tsc",
@@ -14,16 +14,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:getsentry/action-github-app-token.git"
+    "url": "https://github.com/febaisi/action-github-app-jwt-installation-token.git"
   },
   "keywords": [
     "actions",
     "github app",
-    "github auth",
-    "github token",
+    "github installation access token",
     "github action"
   ],
-  "author": "Sentry",
+  "author": "Felipe Baisi",
   "license": "MIT",
   "husky": {
     "hooks": {
@@ -41,31 +40,31 @@
     "singleQuote": true
   },
   "resolutions": {
-    "lodash": "^4.17.19",
-    "node-fetch": "^2.6.1"
+    "lodash": "4.17.19",
+    "node-fetch": "2.6.1"
   },
   "dependencies": {
-    "@actions/core": "^1.5.0",
-    "@octokit/auth-app": "^3.6.0",
-    "@octokit/rest": "^18.9.1"
+    "@actions/core": "1.5.0",
+    "@octokit/auth-app": "3.6.0",
+    "@octokit/rest": "18.9.1"
   },
   "devDependencies": {
-    "@types/jest": "^27.0.1",
-    "@types/node": "^12.7.12",
-    "@typescript-eslint/parser": "^4.30.0",
-    "@vercel/ncc": "^0.30.0",
-    "eslint": "^7.32.0",
-    "eslint-config-sentry": "^1.60.0",
-    "eslint-plugin-github": "^4.2.0",
-    "eslint-plugin-jest": "^24.4.0",
-    "eslint-plugin-prettier": "^3.4.1",
-    "husky": "^4.3.8",
-    "jest": "^27.1.0",
-    "jest-circus": "^27.1.0",
-    "js-yaml": "^4.1.0",
-    "lint-staged": "^11.1.2",
-    "prettier": "^2.3.2",
-    "ts-jest": "^27.0.5",
-    "typescript": "^4.4.2"
+    "@types/jest": "27.0.1",
+    "@types/node": "12.7.12",
+    "@typescript-eslint/parser": "4.30.0",
+    "@vercel/ncc": "0.30.0",
+    "eslint": "7.32.0",
+    "eslint-config-sentry": "1.60.0",
+    "eslint-plugin-github": "4.2.0",
+    "eslint-plugin-jest": "24.4.0",
+    "eslint-plugin-prettier": "3.4.1",
+    "husky": "4.3.8",
+    "jest": "27.1.0",
+    "jest-circus": "27.1.0",
+    "js-yaml": "4.1.0",
+    "lint-staged": "11.1.2",
+    "prettier": "2.3.2",
+    "ts-jest": "27.0.5",
+    "typescript": "4.4.2"
   }
 }
