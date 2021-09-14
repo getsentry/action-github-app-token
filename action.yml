@@ -5,16 +5,22 @@ inputs:
   app_id:
     required: true
     description: 'GitHub App ID'
-  private_key:
+  base64_pem_key:
     required: true
-    description: 'Private key for the GitHub App'
-  scope:
+    description: 'PEM key for the GitHub App -> $(cat path_to_your_pem.pem | base64)'
+  repo_name:
     required: false
-    description: 'Scope of installation account'
+    description: 'Target repository name - Installation access tokens are based on repository names. If not passed it won't seek for an installation access token'
+    default: ''
+  installation_id:
+    required: false
+    description: 'Instance or Installation ID - If not passed it will look for the first item in the api.github.com/app/installations list'
     default: ''
 outputs:
-  token:
-    description: 'Github Token for App installation'
+  jwt_token:
+    description: 'Github App JWT Token'
+  installation_access_token:
+    description: 'Github App installation access token'
 runs:
   using: 'node12'
   main: 'dist/index.js'
