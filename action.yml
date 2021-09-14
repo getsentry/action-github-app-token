@@ -1,6 +1,6 @@
-name: 'action-github-app-token'
+name: 'action-github-app-jwt-installation-token'
 description: 'Gets a GitHub auth token for a GitHub App installation'
-author: 'sentry.io'
+author: 'febaisi'
 inputs:
   app_id:
     required: true
