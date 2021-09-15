@@ -106,8 +106,8 @@
           // Get Github App JWT using the appOctokit object
           try {
             const appAuthentication = yield appOctokit.auth({type: 'app'});
-            core.setSecret(appAuthentication['token']);
-            core.setOutput('jwt_token', appAuthentication['token']);
+            core.setSecret(appAuthentication.token);
+            core.setOutput('jwt_token', appAuthentication.token);
           } catch (error) {
             const errormessage =
               'Not able to retrieve a JWT: ' + new Error(error).message;
@@ -126,7 +126,7 @@
               installations === null || installations === void 0
                 ? void 0
                 : installations.data.find(
-                    (item) => item['id'] === Number(installationId)
+                    (item) => item.id === Number(installationId)
                   );
           } else {
             installation =
