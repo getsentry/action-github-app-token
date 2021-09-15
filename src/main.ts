@@ -1,58 +1,101 @@
-import {createAppAuth} from '@octokit/auth-app';
 import {Octokit} from '@octokit/rest';
-import {Endpoints} from '@octokit/types';
 import * as core from '@actions/core';
+import {createAppAuth} from '@octokit/auth-app';
 
-type listInstallationsResponse =
-  Endpoints['GET /app/installations']['response'];
+async function getAuthenticatedApp(
+  githubAppId: string,
+  pemContent: string
+): Promise<Octokit> {
+  // Create octokit app with basic app id authentication
+  const appOctokit = new Octokit({
+    authStrategy: createAppAuth,
+    auth: {
+      appId: githubAppId,
+      privateKey: pemContent,
+    },
+    baseUrl: process.env.GITHUB_API_URL || 'https://api.github.com',
+  });
 
-async function run(): Promise<void> {
+  return appOctokit;
+}
+
+async function getJWT(appOctokit: Octokit): Promise<void> {
+  // Get Github App JWT using the appOctokit object
   try {
-    const privateKey: string = core.getInput('private_key');
-    const appId: string = core.getInput('app_id');
-    const scope: string = core.getInput('scope');
-    const appOctokit = new Octokit({
-      authStrategy: createAppAuth,
-      auth: {
-        appId,
-        privateKey,
-      },
-      baseUrl: process.env.GITHUB_API_URL || 'https://api.github.com',
-    });
-
-    const installations: listInstallationsResponse =
-      await appOctokit.apps.listInstallations();
-    let installationId = installations.data[0].id;
-    if (scope !== '') {
-      const scopedData = installations.data.find(
-        (item) => item.account?.login === scope
-      );
-      if (scopedData === undefined) {
-        throw new Error(`set scope is ${scope}, but installation is not found`);
-      }
-      installationId = scopedData.id;
-    }
-
-    // This is untyped
-    // See: https://github.com/octokit/core.js/blob/master/src/index.ts#L182-L183
-    const resp = await appOctokit.auth({
-      type: 'installation',
-      installationId,
-    });
-
-    if (!resp) {
-      throw new Error('Unable to authenticate');
-    }
-
-    // @ts-expect-error
-    core.setSecret(resp.token);
-    // @ts-expect-error
-    core.setOutput('token', resp.token);
-  } catch (error) {
-    if (error instanceof Error) {
-      core.setFailed(error.message);
-    }
+    const appAuthentication: any = await appOctokit.auth({type: 'app'});
+    core.setSecret(appAuthentication.token);
+    core.setOutput('jwt_token', appAuthentication.token);
+  } catch (error: any) {
+    const errormessage =
+      'Not able to retrieve a JWT: ' + new Error(error).message;
+    core.setFailed(errormessage);
+    throw new Error(errormessage);
   }
 }
 
-run();
+async function findProperInstallationId(
+  appOctokit: Octokit,
+  installationId: string
+): Promise<string> {
+  // Either confirm if given installation id is valid or find the first occurrence in the installation list
+  let installation;
+
+  const installations = await appOctokit.apps.listInstallations();
+  if (installationId) {
+    installation = installations?.data.find(
+      (item: any) => item.id === Number(installationId)
+    );
+  } else {
+    installation = installations?.data[0];
+  }
+
+  const resp = installation ? installation.id.toString() : '';
+  return Promise.resolve(resp);
+}
+
+async function getInstallationAccessToken(
+  appOctokit: Octokit,
+  installationId: string
+): Promise<void> {
+  // Get Installation Access-Token
+  try {
+    const resp: any = await appOctokit.auth({
+      type: 'installation',
+      installationId,
+    });
+    core.setSecret(resp.token);
+    core.setOutput('installation_access_token', resp.token);
+  } catch (error: any) {
+    const errormessage =
+      'Not able to retrieve the installation access token: ' +
+      new Error(error).message;
+    core.setFailed(errormessage);
+    throw new Error(errormessage);
+  }
+}
+
+async function run(
+  encoded_pem: string,
+  appId: string,
+  installationId: string
+): Promise<void> {
+  const decodedPem = Buffer.from(encoded_pem, 'base64').toString('binary');
+  const appOctokit = await getAuthenticatedApp(appId, decodedPem);
+  await getJWT(appOctokit);
+  const verifiedInstallationId = await findProperInstallationId(
+    appOctokit,
+    installationId
+  );
+
+  if (verifiedInstallationId) {
+    await getInstallationAccessToken(appOctokit, verifiedInstallationId);
+  } else {
+    console.log('Not able to find a valid installation id');
+  }
+}
+
+// Collecting inputs
+const appId: string = core.getInput('app_id');
+const encodedPemFile: string = core.getInput('base64_pem_key');
+const installationId: string = core.getInput('installation_id');
+run(encodedPemFile, appId, installationId);

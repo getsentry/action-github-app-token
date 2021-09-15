@@ -8,10 +8,6 @@ inputs:
   base64_pem_key:
     required: true
     description: 'PEM key for the GitHub App -> $(cat path_to_your_pem.pem | base64)'
-  repo_name:
-    required: false
-    description: 'Target repository name - Installation access tokens are based on repository names. If not passed it won't seek for an installation access token'
-    default: ''
   installation_id:
     required: false
     description: 'Instance or Installation ID - If not passed it will look for the first item in the api.github.com/app/installations list'
