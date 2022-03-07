@@ -3,10 +3,12 @@ import {Octokit} from '@octokit/rest';
 import {Endpoints} from '@octokit/types';
 import * as core from '@actions/core';
 
+import {paginateRest} from '@octokit/plugin-paginate-rest';
+
+const paginateOctokit = Octokit.plugin(paginateRest);
+
 type listInstallationsResponse =
   Endpoints['GET /app/installations']['response'];
-type listRepositoriesResponse =
-  Endpoints['GET /installation/repositories']['response'];
 
 async function run(): Promise<void> {
   try {
@@ -67,19 +69,20 @@ async function isExistRepositoryInGitHubApps(
   installationToken: string,
   repository: string
 ): Promise<void> {
-  const installationOctokit = new Octokit({
+  const installationOctokit = new paginateOctokit({
     auth: installationToken,
     baseUrl: process.env.GITHUB_API_URL || 'https://api.github.com',
   });
-  const accessibleRepositories: listRepositoriesResponse =
-    await installationOctokit.apps.listReposAccessibleToInstallation();
 
-  const repo = accessibleRepositories.data.repositories.find(
-    (item) => item.full_name === repository
-  );
-  if (repo === undefined) {
-    throw new Error(`GitHub Apps can't accessible repository (${repository})`);
+  for await (const response of installationOctokit.paginate.iterator(
+    'GET /installation/repositories'
+  )) {
+    if (response.data.find((r) => r.full_name === repository)) {
+      return undefined;
+    }
   }
+
+  throw new Error(`GitHub Apps can't accessible repository (${repository})`);
 }
 
 run();

@@ -83,10 +83,50 @@
             );
           });
         };
+      var __asyncValues =
+        (this && this.__asyncValues) ||
+        function (o) {
+          if (!Symbol.asyncIterator)
+            throw new TypeError('Symbol.asyncIterator is not defined.');
+          var m = o[Symbol.asyncIterator],
+            i;
+          return m
+            ? m.call(o)
+            : ((o =
+                typeof __values === 'function'
+                  ? __values(o)
+                  : o[Symbol.iterator]()),
+              (i = {}),
+              verb('next'),
+              verb('throw'),
+              verb('return'),
+              (i[Symbol.asyncIterator] = function () {
+                return this;
+              }),
+              i);
+          function verb(n) {
+            i[n] =
+              o[n] &&
+              function (v) {
+                return new Promise(function (resolve, reject) {
+                  (v = o[n](v)), settle(resolve, reject, v.done, v.value);
+                });
+              };
+          }
+          function settle(resolve, reject, d, v) {
+            Promise.resolve(v).then(function (v) {
+              resolve({value: v, done: d});
+            }, reject);
+          }
+        };
       Object.defineProperty(exports, '__esModule', {value: true});
       const auth_app_1 = __nccwpck_require__(7541);
       const rest_1 = __nccwpck_require__(5375);
       const core = __importStar(__nccwpck_require__(2186));
+      const plugin_paginate_rest_1 = __nccwpck_require__(4193);
+      const paginateOctokit = rest_1.Octokit.plugin(
+        plugin_paginate_rest_1.paginateRest
+      );
       function run() {
         return __awaiter(this, void 0, void 0, function* () {
           try {
@@ -145,21 +185,40 @@
         });
       }
       function isExistRepositoryInGitHubApps(installationToken, repository) {
+        var e_1, _a;
         return __awaiter(this, void 0, void 0, function* () {
-          const installationOctokit = new rest_1.Octokit({
+          const installationOctokit = new paginateOctokit({
             auth: installationToken,
             baseUrl: process.env.GITHUB_API_URL || 'https://api.github.com',
           });
-          const accessibleRepositories =
-            yield installationOctokit.apps.listReposAccessibleToInstallation();
-          const repo = accessibleRepositories.data.repositories.find(
-            (item) => item.full_name === repository
-          );
-          if (repo === undefined) {
-            throw new Error(
-              `GitHub Apps can't accessible repository (${repository})`
-            );
+          try {
+            for (
+              var _b = __asyncValues(
+                  installationOctokit.paginate.iterator(
+                    'GET /installation/repositories'
+                  )
+                ),
+                _c;
+              (_c = yield _b.next()), !_c.done;
+
+            ) {
+              const response = _c.value;
+              if (response.data.find((r) => r.full_name === repository)) {
+                return undefined;
+              }
+            }
+          } catch (e_1_1) {
+            e_1 = {error: e_1_1};
+          } finally {
+            try {
+              if (_c && !_c.done && (_a = _b.return)) yield _a.call(_b);
+            } finally {
+              if (e_1) throw e_1.error;
+            }
           }
+          throw new Error(
+            `GitHub Apps can't accessible repository (${repository})`
+          );
         });
       }
       run();
