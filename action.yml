@@ -5,11 +5,21 @@ inputs:
   app_id:
     required: true
     description: 'GitHub App ID'
+
   private_key:
+
     required: true
+
     description: 'Private key for the GitHub App'
+
+
+
+
+
 outputs:
+
   token:
+
     description: 'Github Token for App installation'
 runs:
   using: 'node12'
