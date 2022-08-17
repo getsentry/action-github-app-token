@@ -32,18 +32,15 @@ async function run(): Promise<void> {
       }
       installationId = scopedData.id;
     }
-
     // This is untyped
     // See: https://github.com/octokit/core.js/blob/master/src/index.ts#L182-L183
     const resp = await appOctokit.auth({
       type: 'installation',
       installationId,
     });
-
     if (!resp) {
       throw new Error('Unable to authenticate');
     }
-
     // @ts-expect-error
     core.setSecret(resp.token);
     // @ts-expect-error
