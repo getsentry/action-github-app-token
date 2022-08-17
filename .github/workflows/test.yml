@@ -1,24 +1,18 @@
 name: "test"
-
 on: pull_request
-
 jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-
     - uses: actions/setup-node@v2
       with:
         cache: yarn
-
     - run: yarn
-
     - name: lint
       run: |
         yarn lint
         yarn format-check
-
     - name: build
       run: yarn dist
 
@@ -28,7 +22,6 @@ jobs:
       with:
         app_id: ${{ secrets.INTEGRATION_TEST_APP_ID }}
         private_key: ${{ secrets.INTEGRATION_TEST_APP_PRIVATE_KEY }}
-
     - name: Integration test - checkout private repo
       uses: actions/checkout@v2
       with:
