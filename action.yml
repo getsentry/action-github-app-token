@@ -8,10 +8,6 @@ inputs:
   private_key:
     required: true
     description: 'Private key for the GitHub App'
-  scope:
-    required: false
-    description: 'Scope of installation account'
-    default: ''
 outputs:
   token:
     description: 'Github Token for App installation'
