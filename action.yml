@@ -16,5 +16,5 @@ outputs:
   token:
     description: 'Github Token for App installation'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
