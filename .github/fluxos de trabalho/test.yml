@@ -1,15 +1,15 @@
-name: "test"
+name: felipe-tukun-app token
+- uses: getsentry/action-github-app-token@v2.0.0
 
 on: pull_request
-
-jobs:
+jobs: actions/checkout@v2
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
-    steps:
+    steps: actions/checkout@v2
     - uses: actions/checkout@v2
 
     - uses: actions/setup-node@v2
-      with:
+      with: action-github-app-token
         cache: yarn
 
     - run: yarn
@@ -24,13 +24,13 @@ jobs:
 
     - name: Integration test - get token
       id: my-app
-      uses: ./
-      with:
+      uses: ./getsentry/action-github-app-token@v2.0.0
+      with: ubuntu-latest
         app_id: ${{ secrets.INTEGRATION_TEST_APP_ID }}
         private_key: ${{ secrets.INTEGRATION_TEST_APP_PRIVATE_KEY }}
 
     - name: Integration test - checkout private repo
       uses: actions/checkout@v2
-      with:
+      with: ubuntu-latest
         repository: getsentry/action-github-app-token-test
         token: ${{ steps.my-app.outputs.token }}
