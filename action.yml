@@ -10,7 +10,7 @@ inputs:
     description: 'Private key for the GitHub App'
   scope:
     required: false
-    description: 'Scope of installation account'
+    description: 'Scope of installation account. Format: "org" or "org/repo"'
     default: ''
 outputs:
   token:
