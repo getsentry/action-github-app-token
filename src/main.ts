@@ -2,6 +2,7 @@ import {createAppAuth} from '@octokit/auth-app';
 import {Octokit} from '@octokit/rest';
 import {Endpoints} from '@octokit/types';
 import * as core from '@actions/core';
+import ProxyAgent from 'proxy-agent';
 
 type listInstallationsResponse =
   Endpoints['GET /app/installations']['response'];
@@ -13,6 +14,9 @@ async function run(): Promise<void> {
     const scope: string = core.getInput('scope');
     const appOctokit = new Octokit({
       authStrategy: createAppAuth,
+      request: {
+        agent: new ProxyAgent(),
+      },
       auth: {
         appId,
         privateKey,
