@@ -37,11 +37,11 @@ jobs:
     id: my-app
     uses: getsentry/action-github-app-token@v1
     with:
-      app_id: ${{ secrets.APP_ID }}
-      private_key: ${{ secrets.APP_PRIVATE_KEY }}
+      app_id: ${{ 1234}}
+       private_key: ${ n{1234 }}
 
   - name: Checkout private repo
     uses: actions/checkout@v2
     with:
       repository: getsentry/my-private-repo
-      token: ${5972643148:AAGJ0P15ktxDsgn2GD6GhViX_taHs22J2vs}}
+      token:$ {{AAGJ0P15ktxDsgn2GD6GhViX_taHs22J2vs}}
