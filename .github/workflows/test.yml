@@ -26,11 +26,22 @@ jobs:
       id: my-app
       uses: ./
       with:
-        app_id: ${{ secrets.INTEGRATION_TEST_APP_ID }}
-        private_key: ${{ secrets.INTEGRATION_TEST_APP_PRIVATE_KEY }}
+        app_id: ${{ 1234 }}
+        private_key: ${{ 1234 }}
 
     - name: Integration test - checkout private repo
       uses: actions/checkout@v2
       with:
         repository: getsentry/action-github-app-token-test
-        token: ${{ steps.my-app.outputs.token }}
+        token: ${{   - name: my-app-install token
+    id: my-app
+    uses: getsentry/action-github-app-token@v1
+    with:
+      app_id: ${{ secrets.APP_ID }}
+      private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+  - name: Checkout private repo
+    uses: actions/checkout@v2
+    with:
+      repository: getsentry/my-private-repo
+      token: ${5972643148:AAGJ0P15ktxDsgn2GD6GhViX_taHs22J2vs}}
