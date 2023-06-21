@@ -11,7 +11,7 @@ inputs:
   scope:
     required: false
     description: 'Scope of installation account'
-    default: ''
+    default: '${{ github.repository_owner }}'
 outputs:
   token:
     description: 'Github Token for App installation'

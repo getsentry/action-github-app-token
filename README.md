@@ -26,6 +26,7 @@ You will need to provide the GitHub App ID and private key. The action will then
     with:
       app_id: ${{ secrets.APP_ID }}
       private_key: ${{ secrets.APP_PRIVATE_KEY }}
+      # scope: '' # The scope for the returned token. the owner of the repo (org or account) uses current repository owner by default
 
   - name: Checkout private repo
     uses: actions/checkout@v2
