@@ -22,7 +22,12 @@ async function run(): Promise<void> {
 
     const installations: listInstallationsResponse =
       await appOctokit.apps.listInstallations();
-    let installationId = installations.data[0].id;
+    let installationId;
+    try {
+      installationId = installations.data[0].id;
+    } catch (error) {
+      throw new Error(`Could not get repo installation. Is the app installed on this repo?`);
+    }
     if (scope !== '') {
       const scopedData = installations.data.find(
         (item) => item.account?.login === scope
