@@ -22,13 +22,13 @@ You will need to provide the GitHub App ID and private key. The action will then
 ```
   - name: my-app-install token
     id: my-app
-    uses: getsentry/action-github-app-token@v2
+    uses: getsentry/action-github-app-token@v3
     with:
       app_id: ${{ secrets.APP_ID }}
       private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
   - name: Checkout private repo
-    uses: actions/checkout@v2
+    uses: actions/checkout@v4
     with:
       repository: getsentry/my-private-repo
       token: ${{ steps.my-app.outputs.token }}
