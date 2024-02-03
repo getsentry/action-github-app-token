@@ -11,6 +11,7 @@ async function run(): Promise<void> {
     const privateKey: string = core.getInput('private_key');
     const appId: string = core.getInput('app_id');
     const scope: string = core.getInput('scope');
+    const owner: string = core.getInput('owner').trim();
     const appOctokit = new Octokit({
       authStrategy: createAppAuth,
       auth: {
@@ -22,7 +23,17 @@ async function run(): Promise<void> {
 
     const installations: listInstallationsResponse =
       await appOctokit.apps.listInstallations();
-    let installationId = installations.data[0].id;
+
+    const response = await appOctokit.apps
+      .getOrgInstallation({org: owner})
+      .catch(async (error) => {
+        if (error.status === 404) {
+          return await appOctokit.apps.getUserInstallation({username: owner});
+        }
+        throw error;
+      });
+    let installationId = response.data.id;
+
     if (scope !== '') {
       const scopedData = installations.data.find(
         (item) =>
