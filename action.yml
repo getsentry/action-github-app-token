@@ -10,8 +10,8 @@ inputs:
     description: 'Private key for the GitHub App'
   scope:
     required: false
-    description: 'Scope of installation account'
-    default: ''
+    description: 'Scope of installation account, defaults to the owner of the repository where the workflow is executing'
+    default: ${{ github.repository_owner }}
 outputs:
   token:
     description: 'Github Token for App installation'
