@@ -6,7 +6,7 @@ async function run(): Promise<void> {
   try {
     const privateKey: string = core.getInput('private_key');
     const appId: string = core.getInput('app_id');
-    const scope: string = core.getInput('scope').trim();
+    const scope: string = core.getInput('scope');
     const appOctokit = new Octokit({
       authStrategy: createAppAuth,
       auth: {
@@ -28,6 +28,7 @@ async function run(): Promise<void> {
                   `set scope is ${scope}, but installation is not found`
                 );
               }
+              throw nestederror;
             });
         }
         throw error;
