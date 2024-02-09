@@ -25,7 +25,10 @@ async function run(): Promise<void> {
     let installationId = installations.data[0].id;
     if (scope !== '') {
       const scopedData = installations.data.find(
-        (item) => item.account?.login === scope
+        (item) =>
+          item.account &&
+          'login' in item.account &&
+          item.account?.login === scope
       );
       if (scopedData === undefined) {
         throw new Error(`set scope is ${scope}, but installation is not found`);
