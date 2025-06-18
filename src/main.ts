@@ -1,10 +1,6 @@
 import {createAppAuth} from '@octokit/auth-app';
 import {Octokit} from '@octokit/rest';
-import {Endpoints} from '@octokit/types';
 import * as core from '@actions/core';
-
-type listInstallationsResponse =
-  Endpoints['GET /app/installations']['response'];
 
 async function run(): Promise<void> {
   try {
@@ -20,21 +16,24 @@ async function run(): Promise<void> {
       baseUrl: process.env.GITHUB_API_URL || 'https://api.github.com',
     });
 
-    const installations: listInstallationsResponse =
-      await appOctokit.apps.listInstallations();
-    let installationId = installations.data[0].id;
-    if (scope !== '') {
-      const scopedData = installations.data.find(
-        (item) =>
-          item.account &&
-          'login' in item.account &&
-          item.account?.login === scope
-      );
-      if (scopedData === undefined) {
-        throw new Error(`set scope is ${scope}, but installation is not found`);
-      }
-      installationId = scopedData.id;
-    }
+    const response = await appOctokit.apps
+      .getOrgInstallation({org: scope})
+      .catch(async (error) => {
+        if (error.status === 404) {
+          return await appOctokit.apps
+            .getUserInstallation({username: scope})
+            .catch((nestederror) => {
+              if (nestederror.status === 404) {
+                throw new Error(
+                  `set scope is ${scope}, but installation is not found`
+                );
+              }
+              throw nestederror;
+            });
+        }
+        throw error;
+      });
+    const installationId = response.data.id;
 
     // This is untyped
     // See: https://github.com/octokit/core.js/blob/master/src/index.ts#L182-L183
