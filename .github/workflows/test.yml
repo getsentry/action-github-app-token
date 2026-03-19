@@ -3,7 +3,7 @@ name: "test"
 on: pull_request
 
 jobs:
-  build: # make sure build/ci work properly
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -11,9 +11,12 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         cache: yarn
-        node-version: 20
+        node-version: 24
 
     - run: yarn
+
+    - name: test
+      run: yarn test
 
     - name: lint
       run: |

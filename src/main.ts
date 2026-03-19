@@ -1,6 +1,6 @@
 import {createAppAuth} from '@octokit/auth-app';
 import {Octokit} from '@octokit/rest';
-import {Endpoints} from '@octokit/types';
+import type {Endpoints} from '@octokit/types';
 import * as core from '@actions/core';
 
 type listInstallationsResponse =
@@ -9,6 +9,7 @@ type listInstallationsResponse =
 async function run(): Promise<void> {
   try {
     const privateKey: string = core.getInput('private_key');
+    core.setSecret(privateKey);
     const appId: string = core.getInput('app_id');
     const scope: string = core.getInput('scope');
     const appOctokit = new Octokit({
@@ -28,7 +29,7 @@ async function run(): Promise<void> {
         (item) =>
           item.account &&
           'login' in item.account &&
-          item.account?.login === scope
+          item.account?.login === scope,
       );
       if (scopedData === undefined) {
         throw new Error(`set scope is ${scope}, but installation is not found`);
@@ -36,20 +37,16 @@ async function run(): Promise<void> {
       installationId = scopedData.id;
     }
 
-    // This is untyped
-    // See: https://github.com/octokit/core.js/blob/master/src/index.ts#L182-L183
-    const resp = await appOctokit.auth({
+    const resp = (await appOctokit.auth({
       type: 'installation',
       installationId,
-    });
+    })) as {token: string} | undefined;
 
     if (!resp) {
       throw new Error('Unable to authenticate');
     }
 
-    // @ts-expect-error
     core.setSecret(resp.token);
-    // @ts-expect-error
     core.setOutput('token', resp.token);
   } catch (error) {
     if (error instanceof Error) {
@@ -58,4 +55,4 @@ async function run(): Promise<void> {
   }
 }
 
-run();
+void run();
