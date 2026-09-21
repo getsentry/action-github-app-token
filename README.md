@@ -1,3 +1,5 @@
+> ⚠️⚠️⚠️ Deprecated, please use the official one from GitHub instead https://github.com/actions/create-github-app-token
+
 # action-github-app-token
 
 This uses GitHub Apps to fetch a GitHub auth token for a GitHub App installation.
